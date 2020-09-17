@@ -15,14 +15,6 @@ jobs:
         key_file: id_ecdsa
     - uses: actions/checkout@v2
     - name: Setup GUI
-      run: sudo apt-get install nano xorg lxde-core tightvncserver
-      run: cp -rf passwd ~/.vnc/
-      run: cp -rf xstartup ~/.vnc/
-      run: vncserver -depth 24 -geometry 1280x768
-      run: wget "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-386.zip" -O temp.zip
-      run: unzip temp.zip
-      run: rm temp.zip
-      run: ./ngrok authtoken 2wQnCPcK7LCH9T2pdkK3C_6uPyNuK72myGuVQ2srPNS
-      run: ./ngrok tcp 5900 > /dev/null &
+      run: source script_linux_gui.sh
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@master
