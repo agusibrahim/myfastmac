@@ -1,4 +1,4 @@
-name: mac
+name: mac simple
 on: 
   workflow_dispatch:
 defaults:
@@ -14,7 +14,9 @@ jobs:
         ssh_key: ${{ secrets.SSH_KEY }}
         key_file: id_ecdsa
     - uses: actions/checkout@v2
-    - name:
+    - name: Installing TTY Share
       run: brew install tty-share
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v2
+    - name: Setup TTY Share
+      run: tty-share
+    - name: Entering mainloop...
+      run: tail -f /dev/null
