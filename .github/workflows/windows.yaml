@@ -4,12 +4,15 @@ on:
 defaults:
   run:
     shell: powershell
-
 jobs:
   build:
     runs-on: windows-latest
     steps:
     - name: Download
+      env:
+        NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
+        RDP_USER: Admin
+        RDP_PASSWORD: Secret123
       run: |
         Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
         Expand-Archive ngrok.zip
@@ -18,13 +21,10 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
         Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "Agus123@" -Force)
-    - name: Create Tunnel
-      #run: .\ngrok\ngrok.exe tcp 3389
-      run: |
         Start-Job { & .\ngrok.exe tcp 3389 }
         Start-Sleep 3
         echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
-        echo "
+        echo "User: $($Env:RDP_USER) // Passwd: $($Env:RDP_PASSWORD)"
     - name: Entering mainloop
       run: |
         Start-Sleep 21600
