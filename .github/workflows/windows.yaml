@@ -27,6 +27,6 @@ jobs:
         RDP_PASSWORD: Secret123
     - name: Entering mainloop
       run: |
-        echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
+        # echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
         Start-Sleep 21600
         
