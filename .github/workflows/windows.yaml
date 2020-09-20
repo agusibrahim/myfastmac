@@ -24,6 +24,7 @@ jobs:
         echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
         echo "USERNAME: runneradmin `n PASSWORD: $($Env:RDP_PASSWORD)"
         Start-Sleep 21600
+      continue-on-error: true
       env:
         NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
         RDP_PASSWORD: Secret123
