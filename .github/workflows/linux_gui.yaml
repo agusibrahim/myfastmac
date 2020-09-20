@@ -15,6 +15,8 @@ jobs:
         key_file: id_ecdsa
     - uses: actions/checkout@v2
     - name: Setup GUI
-      run: source script_linux_gui.sh
+      run: |
+        sudo snap install ngrok
+        source script_linux_gui.sh
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@master
