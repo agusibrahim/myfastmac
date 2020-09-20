@@ -23,7 +23,7 @@ jobs:
         Receive-Job 6
         
         # C:\Desktop\ngrok.exe tcp 3389
-        Start-Sleep 3
+        Start-Sleep 43
         # echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
         # echo "User: runneradmin // Passwd: $($Env:RDP_PASSWORD)"
       env:
