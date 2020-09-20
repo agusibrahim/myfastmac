@@ -8,11 +8,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - name: Download
-      env:
-        NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
-        RDP_USER: Admin
-        RDP_PASSWORD: Secret123
+    - name: Setup RDP
       run: |
         Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
         Expand-Archive ngrok.zip
@@ -25,6 +21,10 @@ jobs:
         Start-Sleep 10
         echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
         echo "User: $($RDP_USER) // Passwd: $($RDP_PASSWORD)"
+      env:
+        NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
+        RDP_USER: Admin
+        RDP_PASSWORD: Secret123
     - name: Entering mainloop
       run: |
         Start-Sleep 21600
