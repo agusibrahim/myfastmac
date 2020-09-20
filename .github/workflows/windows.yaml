@@ -17,8 +17,8 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
         Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Env:RDP_PASSWORD -Force)
-        Start-Job { & C:\Desktop\ngrok.exe tcp 3389 }
-        # .\ngrok\ngrok.exe tcp 3389
+        # Start-Job { & C:\Desktop\ngrok.exe tcp 3389 }
+        C:\Desktop\ngrok.exe tcp 3389
         Start-Sleep 3
         # echo "RDP HOST: " (Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url
         # echo "User: runneradmin // Passwd: $($Env:RDP_PASSWORD)"
