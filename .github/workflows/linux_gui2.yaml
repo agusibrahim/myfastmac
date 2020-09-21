@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      NGROK_TOKEN: 2KycTkE9WkuMMKLbi9bpk_7M4ZYSDoEweRr5wuLUbsE
+      NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
       PASSWORD: Secret123
     steps:
     - name: Set up RDP and SSH
