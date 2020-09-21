@@ -1,0 +1,30 @@
+name: linux gui2
+on: 
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NGROK_TOKEN: 2KycTkE9WkuMMKLbi9bpk_7M4ZYSDoEweRr5wuLUbsE
+      PASSWORD: Secret123
+    steps:
+    - name: Set up RDP and SSH
+      run: |
+        sudo snap install ngrok
+        # ngrok authtoken $NGROK_TOKEN
+        sudo apt install xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils xrdp
+        sudo adduser xrdp ssl-cert
+        sudo systemctl restart xrdp
+        echo "root:$PASSWORD" | sudo chpasswd
+        printf "authtoken: $NGROK_TOKEN\nregion: ap\n\ntunnels:\n  ssh:\n    proto: tcp\n    addr: 22\n  rdp:\n    proto: tcp\n    addr: 3389">>myconfig.yml
+        ngrok start --config=myconfig.yml --all > /dev/null &
+        sleep 2
+        echo "SSH HOST:" $(curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url|cut -c7-)
+        echo "RDP HOST:" $(curl -s localhost:4040/api/tunnels | jq -r .tunnels[1].public_url|cut -c7-)
+        echo USERNAME: root
+        echo "PASSWORD:" $PASSWORD
+        sleep 21600
+        continue-on-error: true
