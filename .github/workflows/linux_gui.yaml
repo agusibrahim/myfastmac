@@ -18,5 +18,17 @@ jobs:
       run: |
         sudo snap install ngrok
         source script_linux_gui.sh
+        cat <<EOT >> greetings.txt
+          authtoken: syuuu
+          region: ap
+
+          tunnels:
+              ssh:
+                  proto: tcp 
+                  addr: 22  
+              rdp:
+                  proto: tcp
+                  addr: 3389
+          EOT
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@master
