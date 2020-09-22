@@ -27,6 +27,7 @@ jobs:
         Start-Sleep 6
         $url=(Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url.Substring(6)
         while(1) { echo "`n---------------`nRDP: $($url)`nUSERNAME: runneradmin`nPASSWORD: $($Env:RDP_PASSWORD)"; start-sleep 5 }
+        (New-Object -ComObject shell.application).toggleDesktop()
         Start-Sleep 21600
       continue-on-error: true
       
