@@ -11,6 +11,7 @@ jobs:
       NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
       PASSWORD: Secret123
     steps:
+    - uses: actions/checkout@v2
     - name: Set up RDP and SSH
       run: |
         sudo snap install ngrok
@@ -27,3 +28,9 @@ jobs:
         rdpurl=$(echo $res|jq -r ".tunnels[] | select(.name==\"rdp\").public_url"|cut -c7-)
         while sleep 5; do printf "\n---------------\nSSH: $sshurl\nRDP: $rdpurl\nUSERNAME: runner\nPASSWORD: $PASSWORD"; done
         continue-on-error: true
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: MyArtifact
+        path: artifact/
+        if-no-files-found: ignore
