@@ -23,7 +23,7 @@ jobs:
         ngrok start --config=myconfig.yml --all > /dev/null &
         sleep 3
         res=$(curl -s localhost:4040/api/tunnels)
-        sshurl= $(echo $res|jq -r ".tunnels[] | select(.name==\"ssh\").public_url"|cut -c7-)
-        rdpurl= $(echo $res|jq -r ".tunnels[] | select(.name==\"rdp\").public_url"|cut -c7-)
+        sshurl=$(echo $res|jq -r ".tunnels[] | select(.name==\"ssh\").public_url"|cut -c7-)
+        rdpurl=$(echo $res|jq -r ".tunnels[] | select(.name==\"rdp\").public_url"|cut -c7-)
         while; do printf "\n---------------\nSSH: $sshurl\nRDP: $rdpurl\nUSERNAME: runner\nPASSWORD: $PASSWORD";sleep 5; done
         continue-on-error: true
