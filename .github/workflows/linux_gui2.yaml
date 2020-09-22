@@ -32,5 +32,7 @@ jobs:
       if: ${{ always() }}
       with:
         name: MyArtifact
-        path: artifact/
+        path: |
+          artifact/
+          !artifact/out.md
         if-no-files-found: ignore
