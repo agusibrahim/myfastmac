@@ -26,8 +26,7 @@ jobs:
         Start-Job { & C:\Desktop\ngrok.exe tcp 3389 }
         Start-Sleep 6
         $url=(Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url.Substring(6)
-        echo "RDP: $($url)"
-        echo "USERNAME: runneradmin`nPASSWORD: $($Env:RDP_PASSWORD)"
+        while(1) { echo "`n---------------`nRDP: $($url)`nUSERNAME: runneradmin`nPASSWORD: $($Env:RDP_PASSWORD)"; start-sleep 5 }
         Start-Sleep 21600
       continue-on-error: true
       
