@@ -20,8 +20,8 @@ jobs:
         echo "runner:$PASSWORD" | sudo chpasswd
         printf "authtoken: $NGROK_TOKEN\nregion: ap\n\ntunnels:\n  ssh:\n    proto: tcp\n    addr: 22\n  rdp:\n    proto: tcp\n    addr: 3389">>myconfig.yml
         ngrok start --config=myconfig.yml --all > /dev/null &
-        sleep 10
-        # resx="";while [ "$resx" != "2" ]; do resx=$(curl -s localhost:4040/api/tunnels|jq '.tunnels| length'); done
+        sleep 2
+        resx="";while [ "$resx" != "2" ]; do resx=$(curl -s localhost:4040/api/tunnels|jq '.tunnels| length'); done
         res=$(curl -s localhost:4040/api/tunnels)
         sshurl=$(echo $res|jq -r ".tunnels[] | select(.name==\"ssh\").public_url"|cut -c7-)
         rdpurl=$(echo $res|jq -r ".tunnels[] | select(.name==\"rdp\").public_url"|cut -c7-)
