@@ -29,12 +29,12 @@ jobs:
         Start-Sleep 6
         $url=(Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels").tunnels.public_url.Substring(6)
         while(1) { echo "`n---------------`nRDP: $($url)`nUSERNAME: runneradmin`nPASSWORD: $($Env:RDP_PASSWORD)"; start-sleep 5 }
-      continue-on-error: true
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
       with:
         name: MyArtifact
         path: artifact/
+        if-no-files-found: ignore
       
       
         
