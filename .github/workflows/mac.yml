@@ -15,10 +15,13 @@ jobs:
         key_file: id_ecdsa
     - uses: actions/checkout@v2
     - run: source script-mac.sh
-    - name: setup android emulator
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 29
-        script: adb devices
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v2
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: MyArtifact
+        path: |
+          artifact/
+          !artifact/out.md
+        if-no-files-found: ignore
