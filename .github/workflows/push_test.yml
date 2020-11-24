@@ -17,6 +17,7 @@ jobs:
       run: |
         touch helloagus.txt
         echo "this is content">hellocontent.txt
+        git add *
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
