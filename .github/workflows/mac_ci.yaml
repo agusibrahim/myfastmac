@@ -1,4 +1,4 @@
-name: mac builder
+name: mac ci
 on: 
   workflow_dispatch:
 defaults:
@@ -6,15 +6,9 @@ defaults:
     shell: bash
 
 jobs:
-  Bulder:
+  Instance:
     runs-on: macos-latest
     steps:
-    - uses: fastai/workflows/ssh@master
-      with:
-        ssh_key: ${{ secrets.SSH_KEY }}
-        key_file: id_ecdsa
-    - uses: actions/checkout@v2
-    - run: source script-mac.sh
     - name: Import Codesign Certificate
       id: codesign-cert
       uses: Apple-Actions/import-codesign-certs@v1
@@ -30,8 +24,17 @@ jobs:
         api-key-id: ${{ secrets.APPCONNECT_API_KEY_ID }}
         api-private-key: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
         profile-type: IOS_APP_STORE  
-    - name: Waiting for
-      run:|
+    - name: Installing requirement Apps
+      run: |
+        brew install ngrok --cask
+        brew install code-server
+        code-server --auth none>/dev/null &
+        ngrok authtoken 3FqC8NZYFm3FCTnq31YP_4PVTJD76Ugzejfn5Eq49A
+        ngrok http 8080 >/dev/null &
+        sleep 10
+        curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url
+    - name: Waiting for Agus
+      run: |
         while ! test -f "/tmp/stopnow"; do
           sleep 10
         done
