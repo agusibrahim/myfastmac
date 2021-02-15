@@ -1,0 +1,45 @@
+name: mac builder
+on: 
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  Bulder:
+    runs-on: macos-latest
+    steps:
+    - uses: fastai/workflows/ssh@master
+      with:
+        ssh_key: ${{ secrets.SSH_KEY }}
+        key_file: id_ecdsa
+    - uses: actions/checkout@v2
+    - run: source script-mac.sh
+    - name: Import Codesign Certificate
+      id: codesign-cert
+      uses: Apple-Actions/import-codesign-certs@v1
+      with:
+        p12-file-base64: ${{ secrets.DIST_CERT_BASE64 }}
+        p12-password: ${{ secrets.DIST_CERT_P12_PASSWORD }}
+    - name: Import Healthshare Provisioning Profile
+      id: prov-profile
+      uses: Apple-Actions/download-provisioning-profiles@v1
+      with:
+        bundle-id: ${{ secrets.BUNDLE_ID }}
+        issuer-id: ${{ secrets.APPCONNECT_API_ISSUER }}
+        api-key-id: ${{ secrets.APPCONNECT_API_KEY_ID }}
+        api-private-key: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
+        profile-type: IOS_APP_STORE  
+    - name: Waiting for
+      run:|
+        while ! test -f "/tmp/stopnow"; do
+          sleep 10
+        done
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: MyArtifact
+        path: |
+          artifact/
+          !artifact/out.md
+        if-no-files-found: ignore
