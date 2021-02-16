@@ -31,8 +31,9 @@ jobs:
         code-server --auth none>/dev/null &
         ngrok authtoken 3FqC8NZYFm3FCTnq31YP_4PVTJD76Ugzejfn5Eq49A
         ngrok http 8080 >/dev/null &
-        sleep 10
-        curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url
+        sleep 7
+        vsurl=$(curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url)
+        curl -X "PUT" "https://api.jsonbin.io/b/602b74834177c81b39c65b90" -H 'Content-Type: application/json' -H 'secret-key: $2b$10$DfHbA5X/E2M9cyKnpItQiO0TFYZG3D4O9XX/Cf1iOVS7Kpq1.gwWe' -d $'{ "url": "'"$vsurl"'" }'
     - name: Waiting for Agus
       run: |
         while ! test -f "/tmp/stopnow"; do
