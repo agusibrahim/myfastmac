@@ -1,6 +1,10 @@
 name: mac ci
 on: 
   workflow_dispatch:
+    inputs:
+        name:
+          required: false
+          default: 'agus'
 defaults:
   run:
     shell: bash
