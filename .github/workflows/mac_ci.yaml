@@ -2,9 +2,22 @@ name: mac ci
 on: 
   workflow_dispatch:
     inputs:
-        name:
-          required: false
-          default: 'agus'
+        api_issuer:
+          required: true
+        api_key:
+          required: true
+        api_private:
+          required: true
+        bundle_id:
+          required: true
+        dist_b64:
+          required: true
+        dist_pwd:
+          required: true
+        ngrok_token:
+          required: true
+        jsonbin_secret:
+          required: true
 defaults:
   run:
     shell: bash
@@ -17,27 +30,27 @@ jobs:
       id: codesign-cert
       uses: Apple-Actions/import-codesign-certs@v1
       with:
-        p12-file-base64: ${{ secrets.DIST_CERT_BASE64 }}
-        p12-password: ${{ secrets.DIST_CERT_P12_PASSWORD }}
+        p12-file-base64: ${{ github.event.inputs.dist_b64 }}
+        p12-password: ${{ github.event.inputs.dist_pwd }}
     - name: Import Healthshare Provisioning Profile
       id: prov-profile
       uses: Apple-Actions/download-provisioning-profiles@v1
       with:
-        bundle-id: ${{ secrets.BUNDLE_ID }}
-        issuer-id: ${{ secrets.APPCONNECT_API_ISSUER }}
-        api-key-id: ${{ secrets.APPCONNECT_API_KEY_ID }}
-        api-private-key: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
+        bundle-id: ${{ github.event.inputs.bundle_id }}
+        issuer-id: ${{ github.event.inputs.api_issuer }}
+        api-key-id: ${{ github.event.inputs.api_key }}
+        api-private-key: ${{ github.event.inputs.api_private }}
         profile-type: IOS_APP_STORE  
     - name: Installing requirement Apps
       run: |
         brew install ngrok --cask
         brew install code-server
         code-server --auth none>/dev/null &
-        ngrok authtoken 3FqC8NZYFm3FCTnq31YP_4PVTJD76Ugzejfn5Eq49A
+        ngrok authtoken ${{ github.event.inputs.ngrok_token }}
         ngrok http 8080 >/dev/null &
         sleep 7
         vsurl=$(curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url)
-        curl -X "PUT" "https://api.jsonbin.io/b/602b74834177c81b39c65b90" -H 'Content-Type: application/json' -H 'secret-key: $2b$10$DfHbA5X/E2M9cyKnpItQiO0TFYZG3D4O9XX/Cf1iOVS7Kpq1.gwWe' -d $'{ "url": "'"$vsurl"'" }'
+        curl -X "PUT" "https://api.jsonbin.io/b/602b74834177c81b39c65b90" -H 'Content-Type: application/json' -H 'secret-key: '"${{ github.event.inputs.jsonbin_secret }}"'' -d $'{ "url": "'"$vsurl"'" }'
     - name: Waiting for Agus
       run: |
         while ! test -f "/tmp/stopnow"; do
