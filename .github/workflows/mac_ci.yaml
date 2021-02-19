@@ -50,8 +50,7 @@ jobs:
         ngrok http 8080 >/dev/null &
         sleep 7
         vsurl=$(curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url)
-        curl -X "PUT" "https://api.jsonbin.io/b/602b74834177c81b39c65b90" -H 'Content-Type: application/json' -H 'secret-key: ${{ github.event.inputs.jsonbin_secret }}' -d $'{ "url": "'"$
-        "'" }'
+        curl -X "PUT" "https://api.jsonbin.io/b/602b74834177c81b39c65b90" -H 'Content-Type: application/json' -H 'secret-key: ${{ github.event.inputs.jsonbin_secret }}' -d $'{ "url": "'"$vsurl"'" }'
     - name: Waiting for Agus
       run: |
         while ! test -f "/tmp/stopnow"; do
