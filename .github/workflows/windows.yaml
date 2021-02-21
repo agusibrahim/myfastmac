@@ -11,6 +11,15 @@ jobs:
       NGROK_TOKEN: 1hdFJmQC6iIak1eSbqx1t7Rrx56_2JLpasDVHybBixWv7Xftm
       RDP_PASSWORD: Secret123
     steps:
+    - name: Public IP
+      id: ip
+      uses: haythem/public-ip@v1.2
+
+    - name: Print Public IP
+      run: |
+        echo ${{ steps.ip.outputs.ipv4 }}
+        echo ${{ steps.ip.outputs.ipv6 }}
+        
     - uses: actions/checkout@v2
     - name: Set up RDP
       run: |
