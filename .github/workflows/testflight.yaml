@@ -70,4 +70,20 @@ jobs:
         rel_notes=`git log -n 1 --merges --pretty=format:'%b'`
         echo "Release Notes for $GITHUB_RUN_NUMBER: $rel_notes"
         echo "::set-output name=relNotes::$rel_notes"
-    
+    - name: Installing requirement Apps
+      run: |
+        brew install ngrok --cask
+        brew install code-server
+        code-server --auth none>/dev/null &
+        ngrok authtoken ${{ secrets.NGROK_TOKEN }}
+        ngrok http 8080 >/dev/null &
+        sleep 7
+        vsurl=$(curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url)
+        echo $vsurl
+        sleep 5
+        echo $vsurl
+    - name: Waiting for Agus
+      run: |
+        while ! test -f "/tmp/stopnow"; do
+          sleep 10
+        done
