@@ -17,58 +17,15 @@ jobs:
       with:
         p12-file-base64: ${{ secrets.DIST_CERT_BASE64 }}
         p12-password: ${{ secrets.DIST_CERT_P12_PASSWORD }}
-    - name: Generate App Store Connect API Token
-      id: app-store-api-token
-      env:
-        ISSUER_ID: ${{ secrets.APPCONNECT_API_ISSUER }}
-        KEY_ID: ${{ secrets.APPCONNECT_API_KEY_ID }}
-        AUTH_KEY: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
-      run: |
-        pip3 install cryptography
-        pip3 install pyjwt
-        exp=$(date -v +20M +%s)
-        iss=$(date -v -1M +%s)
-        jwt=$(python3 -c "import jwt; print(jwt.encode({'aud':'appstoreconnect-v1','iss':'$ISSUER_ID','exp':$exp,'iat':$iss},'''$AUTH_KEY''',algorithm='ES256', headers={'kid': '$KEY_ID'}).decode('utf-8'))")
-        echo "::add-mask::$jwt"
-        echo "::set-output name=appStoreToken::$jwt"
-    - name: Prime App Store Connect API
-      env:
-        JWT: ${{ steps.app-store-api-token.outputs.appStoreToken }}
-      uses: nick-invision/retry@v1.0.0
-      with:
-        timeout_minutes: 1
-        max_attempts: 30
-        command: 'curl --header "Authorization: Bearer $JWT" -s -o /dev/null -w "%{http_code}" --fail https://api.appstoreconnect.apple.com/v1/bundleIds'
     - name: Import Healthshare Provisioning Profile
       id: prov-profile
       uses: Apple-Actions/download-provisioning-profiles@v1
       with:
-        bundle-id: YOUR_BUNDLE_ID_HERE
+        bundle-id: com.infiniqa.sapcbo
         issuer-id: ${{ secrets.APPCONNECT_API_ISSUER }}
         api-key-id: ${{ secrets.APPCONNECT_API_KEY_ID }}
         api-private-key: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
         profile-type: IOS_APP_STORE
-    - name: Bump Build Version
-      run: |
-        for f in */Info.plist
-        do
-          /usr/libexec/PlistBuddy $f -c "Set :CFBundleVersion $GITHUB_RUN_NUMBER"
-        done
-        sed -i '' -e 's/\(\([0-9]\{1,\}\.\)\{1,\}\)\([0-9]\)/\1'"$GITHUB_RUN_NUMBER"'/g' */Properties/AssemblyInfo.cs
-    - name: Restore Dependencies & Build IPA
-      run: |
-        nuget restore
-        msbuild /p:Configuration=Release /p:Platform=iPhone /p:BuildIpa=true /p:IpaPackageDir=$GITHUB_WORKSPACE/build "/p:Codesignkey=Apple Distribution"
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        path: ${{ github.workspace }}/build/*ipa
-    - name: Preparing Release Notes from PR History
-      id: release-notes
-      run: |
-        rel_notes=`git log -n 1 --merges --pretty=format:'%b'`
-        echo "Release Notes for $GITHUB_RUN_NUMBER: $rel_notes"
-        echo "::set-output name=relNotes::$rel_notes"
     - name: Installing requirement Apps
       run: |
         brew install ngrok --cask
