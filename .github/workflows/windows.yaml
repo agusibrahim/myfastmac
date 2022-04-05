@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      NGROK_TOKEN: 1UKt9R2RmNYwfF21N2hZ9YPfoDj_662QRqbiq84jeT5RZuofS
+      NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
       RDP_PASSWORD: Secret123
     steps:
     - name: Public IP
