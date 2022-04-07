@@ -1,0 +1,45 @@
+name: Mac Minimal
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Import Codesign Certificate
+      id: codesign-cert
+      uses: Apple-Actions/import-codesign-certs@v1
+      with:
+        p12-file-base64: ${{ secrets.DIST_CERT_BASE64 }}
+        p12-password: ${{ secrets.DIST_CERT_P12_PASSWORD }}
+    - name: Import Healthshare Provisioning Profile
+      id: prov-profile
+      uses: Apple-Actions/download-provisioning-profiles@v1
+      with:
+        bundle-id: com.infiniqa.sapcbo
+        issuer-id: ${{ secrets.APPCONNECT_API_ISSUER }}
+        api-key-id: ${{ secrets.APPCONNECT_API_KEY_ID }}
+        api-private-key: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
+        profile-type: IOS_APP_STORE
+    - name: Installing requirement Apps
+      run: |
+        brew install ngrok --cask
+        brew install code-server
+        code-server --auth none>/dev/null &
+        ngrok authtoken ${{ secrets.NGROK_TOKEN }}
+        ngrok http 8080 >/dev/null &
+        sleep 7
+        vsurl=$(curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url)
+        echo $vsurl
+        sleep 5
+        echo $vsurl
+    - name: Waiting for Agus
+      run: |
+        while ! test -f "/tmp/stopnow"; do
+          sleep 10
+        done
