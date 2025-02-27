@@ -21,4 +21,4 @@ jobs:
       if: true
       with:
         machineName: myMachine # optional, default: GitHub workflow run ID
-        timeout: '30000'       # optional, default: 30000
+        timeout: '3000000'       # optional, default: 30000
