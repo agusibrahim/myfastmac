@@ -1,0 +1,24 @@
+name: mac builder
+on: 
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    # make sure these permissions are set so that
+    # VS Code can connect to the machine
+    permissions:
+      actions: read
+      contents: read
+    steps:
+    # ...
+    - name: 🐛 Debug Build
+      uses: stateful/vscode-server-action@v1
+      if: failure()
+      with:
+        machineName: myMachine # optional, default: GitHub workflow run ID
+        timeout: '30000'       # optional, default: 30000
