@@ -17,13 +17,6 @@ jobs:
           export ORT_STRATEGY=download
           EOF
 
-      - name: 🚀 Start sshx for Debugging
-        uses: sshx-gg/sshx-action@v1
-        # sshx akan memberikan URL di logs. Anda bisa masuk ke sini 
-        # dan menjalankan kompilasi secara interaktif.
-
       - name: 🏗️ Instructions for Manual Build (Interaktif)
         run: |
-          echo "SAAT ANDA DI DALAM SSHX, JALANKAN INI:"
-          echo "docker run --rm -it -v \$(pwd):/app -w /app ubuntu:20.04 /bin/bash"
-          echo "Lalu di dalam docker, jalankan: ./build_script.sh"
+          curl -sSf https://sshx.io/get | sh
