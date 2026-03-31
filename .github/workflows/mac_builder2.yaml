@@ -20,3 +20,4 @@ jobs:
       - name: 🏗️ Instructions for Manual Build (Interaktif)
         run: |
           curl -sSf https://sshx.io/get | sh
+          sshx
