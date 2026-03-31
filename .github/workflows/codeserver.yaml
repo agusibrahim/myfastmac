@@ -10,8 +10,6 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-24.04-arm
     # PENTING: Gunakan container yang versinya sama dengan Armbian Anda
-    container:
-      image: ubuntu:20.04
     permissions:
       actions: read
       contents: read
