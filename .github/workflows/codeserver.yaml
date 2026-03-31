@@ -7,13 +7,15 @@ defaults:
 
 jobs:
   test:
-    name: Test
+    name: Build & Test
     runs-on: ubuntu-24.04-arm
-    # make sure these permissions are set so that
-    # VS Code can connect to the machine
+    # PENTING: Gunakan container yang versinya sama dengan Armbian Anda
+    container:
+      image: ubuntu:20.04
     permissions:
       actions: read
       contents: read
+
     steps:
     # ...
     - name: 🐛 Debug Build
