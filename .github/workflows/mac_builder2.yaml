@@ -11,6 +11,7 @@ jobs:
 
       - name: 🛠️ Setup Build Environment (Ubuntu 20.04 via Docker)
         run: |
+          apk add curl
           # Kita siapkan script pembantu agar build berjalan di dalam 'lingkungan' 20.04
           cat <<EOF > build_script.sh
           apt-get update && apt-get install -y curl build-essential pkg-config libssl-dev perl make
