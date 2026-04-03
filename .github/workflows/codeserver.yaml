@@ -8,7 +8,7 @@ defaults:
 jobs:
   test:
     name: Build & Test
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     # PENTING: Gunakan container yang versinya sama dengan Armbian Anda
     permissions:
       actions: read
